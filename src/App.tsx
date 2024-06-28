@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -12,22 +12,22 @@ function metersToPixelsAtMaxZoom(meters: number, latitude: number) {
   return meters / 0.075 / Math.cos((latitude * Math.PI) / 180);
 }
 
-function getPointInsideCircle(center: number[], radius: number) {
-  const randomAngle = Math.random() * Math.PI * 2;
-  const randomRadius = Math.random() * radius;
+// function getPointInsideCircle(center: number[], radius: number) {
+//   const randomAngle = Math.random() * Math.PI * 2;
+//   const randomRadius = Math.random() * radius;
 
-  return [
-    center[0] + randomRadius * Math.cos(randomAngle),
-    center[1] + randomRadius * Math.sin(randomAngle),
-  ];
-}
+//   return [
+//     center[0] + randomRadius * Math.cos(randomAngle),
+//     center[1] + randomRadius * Math.sin(randomAngle),
+//   ];
+// }
 
 function App() {
   const mapContainer = useRef(null);
   const map = useRef<mapboxgl.Map | null>(null);
 
-  const [circleWidth, setCircleWidth] = useState(2000);
-  const [circleCenter, setCircleCenter] = useState([lng, lat]);
+  // const [circleWidth, setCircleWidth] = useState(2000);
+  // const [circleCenter, setCircleCenter] = useState([lng, lat]);
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -46,7 +46,7 @@ function App() {
           type: "Feature",
           geometry: {
             type: "Point",
-            coordinates: circleCenter,
+            coordinates: [lng, lat],
           },
         },
       });
@@ -59,7 +59,7 @@ function App() {
           "circle-radius": {
             stops: [
               [0, 0],
-              [20, metersToPixelsAtMaxZoom(circleWidth, lat)], // 500 meters radius
+              [20, metersToPixelsAtMaxZoom(500, lat)], // 500 meters radius
             ],
             base: 2,
           },
@@ -88,24 +88,7 @@ function App() {
   return (
     <main className="w-screen h-screen">
       <div ref={mapContainer} className="w-full h-full mapboxgl-canvas" />
-      <button
-        className="p-4 bg-black text-white fixed top-2 left-2 z-20"
-        onClick={() => {
-          const newCircleCenter = getPointInsideCircle(
-            circleCenter,
-            circleWidth
-          );
-          setCircleCenter(newCircleCenter);
-          map.current.getSource("circleCenter").setData({
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: newCircleCenter,
-            },
-          });
-          setCircleWidth(2000 * 0.5);
-        }}
-      >
+      <button className="p-4 bg-black text-white fixed top-2 left-2 z-20">
         UPDATE CIRCLE
       </button>
     </main>
