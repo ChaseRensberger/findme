@@ -13,7 +13,7 @@ function App() {
   const mapContainer = useRef(null);
   const map = useRef<mapboxgl.Map | null>(null);
 
-  const [circleWidth, setCircleWidth] = useState(2000);
+  const [circleWidth, setCircleWidth] = useState(1000000);
   const [circleCenter, setCircleCenter] = useState<[lat: number, lng: number]>([
     lat,
     lng,

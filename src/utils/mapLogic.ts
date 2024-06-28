@@ -53,13 +53,24 @@ function updateCircle(
     },
   });
   console.log("Updating layer...");
-  map.current.getLayer("circleLayer").paint["circle-radius"] = {
-    stops: [
-      [0, 0],
-      [20, metersToPixels(radius * 2, center[0])],
-    ],
-    base: 2,
-  };
+  // May be a better way to do this
+  map.current.removeLayer("circleLayer");
+  map.current.addLayer({
+    id: "circleLayer",
+    type: "circle",
+    source: "circleCenter",
+    paint: {
+      "circle-radius": {
+        stops: [
+          [0, 0],
+          [20, metersToPixels(radius * 2, center[0])],
+        ],
+        base: 2,
+      },
+      "circle-color": "#f2cc50",
+      "circle-opacity": 0.3,
+    },
+  });
 }
 
 export { metersToPixels, addCircle, updateCircle };
