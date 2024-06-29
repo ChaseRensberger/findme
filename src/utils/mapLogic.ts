@@ -66,23 +66,34 @@ function updateCircle(map: mapboxgl.Map, center: Position, radius: number) {
   });
 }
 
-function addPlayer(map: mapboxgl.Map, center: Position, radius: number) {
-  console.log("Adding source...");
-  map.current.addSource("circleCenter", {
-    type: "geojson",
-    data: {
+function drawPlayer(map: mapboxgl.Map, center: Position, radius: number) {
+  if (map.current.getSource("playerCenter")) {
+    map.current.getSource("playerCenter").setData({
       type: "Feature",
       geometry: {
         type: "Point",
         coordinates: [center.longitude, center.latitude],
       },
-    },
-  });
+    });
+    map.current.removeLayer("playerLayer");
+  } else {
+    console.log("Adding source...");
+    map.current.addSource("playerCenter", {
+      type: "geojson",
+      data: {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [center.longitude, center.latitude],
+        },
+      },
+    });
+  }
   console.log("Adding layer...");
   map.current.addLayer({
-    id: "circleLayer",
+    id: "playerLayer",
     type: "circle",
-    source: "circleCenter",
+    source: "playerCenter",
     paint: {
       "circle-radius": {
         stops: [
@@ -97,4 +108,4 @@ function addPlayer(map: mapboxgl.Map, center: Position, radius: number) {
   });
 }
 
-export { metersToPixels, addCircle, updateCircle, addPlayer };
+export { metersToPixels, addCircle, updateCircle, drawPlayer };

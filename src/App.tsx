@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { addCircle, updateCircle } from "./utils/mapLogic";
+import { addCircle, updateCircle, drawPlayer } from "./utils/mapLogic";
 import { useLocation } from "./hooks/useLocation";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -24,14 +24,6 @@ function App() {
     longitude: lng,
   });
   const listenerExists = useRef(false);
-
-  useEffect(() => {
-    if (!location) return;
-    console.log(location);
-    // draw player circle
-    // addPlayer(map.current, [location.lat, location.lon], 5);
-    // send location to server
-  }, [location]);
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -64,6 +56,9 @@ function App() {
 
     if (map.current.getSource("circleCenter")) {
       updateCircle(map, circleCenter, circleWidth / 2);
+      if (location) {
+        drawPlayer(map, location, 5);
+      }
       return;
     }
     if (listenerExists.current) {
@@ -76,8 +71,11 @@ function App() {
     map.current.on("load", () => {
       console.log("Load listener activated...");
       addCircle(map, circleCenter, circleWidth / 2);
+      if (location) {
+        drawPlayer(map, location, 5);
+      }
     });
-  }, [circleWidth, circleCenter, listenerExists]);
+  }, [circleWidth, circleCenter, listenerExists, location]);
 
   return (
     <main className="w-screen h-screen">
