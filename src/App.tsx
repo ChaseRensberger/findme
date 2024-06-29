@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { addCircle, updateCircle } from "./utils/mapLogic";
+import { useLocation } from "./hooks/useLocation";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -7,11 +8,12 @@ mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_TOKEN;
 
 const lat = 38.8898163351636;
 const lng = -77.010104237199;
-const zoom = 12;
+const zoom = 5;
 
 function App() {
   const mapContainer = useRef(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const [location, error] = useLocation();
 
   const [circleWidth, setCircleWidth] = useState(1000000);
   const [circleCenter, setCircleCenter] = useState<[lat: number, lng: number]>([
@@ -19,6 +21,14 @@ function App() {
     lng,
   ]);
   const listenerExists = useRef(false);
+
+  useEffect(() => {
+    if (!location) return;
+    console.log(location);
+    // draw player circle
+    // addPlayer(map.current, [location.lat, location.lon], 5);
+    // send location to server
+  }, [location]);
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -74,6 +84,8 @@ function App() {
         onClick={() => {
           setCircleWidth(circleWidth * 0.5);
           setCircleCenter([lat, lng]);
+          console.log(location);
+          console.log(error);
         }}
       >
         UPDATE CIRCLE

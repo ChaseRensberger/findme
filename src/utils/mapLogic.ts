@@ -73,4 +73,39 @@ function updateCircle(
   });
 }
 
-export { metersToPixels, addCircle, updateCircle };
+function addPlayer(
+  map: mapboxgl.Map,
+  center: [lat: number, lng: number],
+  radius: number
+) {
+  console.log("Adding source...");
+  map.current.addSource("circleCenter", {
+    type: "geojson",
+    data: {
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [...center].reverse(),
+      },
+    },
+  });
+  console.log("Adding layer...");
+  map.current.addLayer({
+    id: "circleLayer",
+    type: "circle",
+    source: "circleCenter",
+    paint: {
+      "circle-radius": {
+        stops: [
+          [0, 0],
+          [20, metersToPixels(radius * 2, center[0])],
+        ],
+        base: 2,
+      },
+      "circle-color": "#0303fc",
+      "circle-opacity": 1,
+    },
+  });
+}
+
+export { metersToPixels, addCircle, updateCircle, addPlayer };
