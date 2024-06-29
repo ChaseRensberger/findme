@@ -1,14 +1,11 @@
 import mapboxgl from "mapboxgl";
+import { Position } from "../types";
 
 function metersToPixels(meters: number, latitude: number) {
   return meters / 0.075 / Math.cos((latitude * Math.PI) / 180);
 }
 
-function addCircle(
-  map: mapboxgl.Map,
-  center: [lat: number, lng: number],
-  radius: number
-) {
+function addCircle(map: mapboxgl.Map, center: Position, radius: number) {
   console.log("Adding source...");
   map.current.addSource("circleCenter", {
     type: "geojson",
@@ -16,7 +13,7 @@ function addCircle(
       type: "Feature",
       geometry: {
         type: "Point",
-        coordinates: [...center].reverse(),
+        coordinates: [center.longitude, center.latitude],
       },
     },
   });
@@ -29,7 +26,7 @@ function addCircle(
       "circle-radius": {
         stops: [
           [0, 0],
-          [20, metersToPixels(radius * 2, center[0])],
+          [20, metersToPixels(radius * 2, center.latitude)],
         ],
         base: 2,
       },
@@ -39,17 +36,13 @@ function addCircle(
   });
 }
 
-function updateCircle(
-  map: mapboxgl.Map,
-  center: [lat: number, lng: number],
-  radius: number
-) {
+function updateCircle(map: mapboxgl.Map, center: Position, radius: number) {
   console.log("Updating source...");
   map.current.getSource("circleCenter").setData({
     type: "Feature",
     geometry: {
       type: "Point",
-      coordinates: [...center].reverse(),
+      coordinates: [center.longitude, center.latitude],
     },
   });
   console.log("Updating layer...");
@@ -63,7 +56,7 @@ function updateCircle(
       "circle-radius": {
         stops: [
           [0, 0],
-          [20, metersToPixels(radius * 2, center[0])],
+          [20, metersToPixels(radius * 2, center.latitude)],
         ],
         base: 2,
       },
@@ -73,11 +66,7 @@ function updateCircle(
   });
 }
 
-function addPlayer(
-  map: mapboxgl.Map,
-  center: [lat: number, lng: number],
-  radius: number
-) {
+function addPlayer(map: mapboxgl.Map, center: Position, radius: number) {
   console.log("Adding source...");
   map.current.addSource("circleCenter", {
     type: "geojson",
@@ -85,7 +74,7 @@ function addPlayer(
       type: "Feature",
       geometry: {
         type: "Point",
-        coordinates: [...center].reverse(),
+        coordinates: [center.longitude, center.latitude],
       },
     },
   });
@@ -98,7 +87,7 @@ function addPlayer(
       "circle-radius": {
         stops: [
           [0, 0],
-          [20, metersToPixels(radius * 2, center[0])],
+          [20, metersToPixels(radius * 2, center.latitude)],
         ],
         base: 2,
       },

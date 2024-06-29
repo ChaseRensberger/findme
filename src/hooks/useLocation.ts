@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
+import { Position } from "../types";
 
 export function useLocation() {
-  const [location, setLocation] = useState<{ lat: number; lon: number } | null>(
-    null
-  );
+  const [location, setLocation] = useState<Position | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
+  // TODO: rewrite to not use .then
   useEffect(() => {
-    function getLocation(): Promise<{ lat: number; lon: number }> {
+    function getLocation(): Promise<Position> {
       return new Promise((resolve, reject) => {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             (position) => {
               const { latitude, longitude } = position.coords;
-              resolve({ lat: latitude, lon: longitude });
+              resolve({ latitude: latitude, longitude: longitude });
             },
             (error) => {
               reject(error);

@@ -16,10 +16,13 @@ function App() {
   const [location, error] = useLocation();
 
   const [circleWidth, setCircleWidth] = useState(1000000);
-  const [circleCenter, setCircleCenter] = useState<[lat: number, lng: number]>([
-    lat,
-    lng,
-  ]);
+  const [circleCenter, setCircleCenter] = useState<{
+    latitude: number;
+    longitude: number;
+  }>({
+    latitude: lat,
+    longitude: lng,
+  });
   const listenerExists = useRef(false);
 
   useEffect(() => {
@@ -37,7 +40,7 @@ function App() {
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/chasehudson01/clxy1c84x002z01qo8ff251xj",
-      center: [...circleCenter].reverse(),
+      center: [circleCenter.longitude, circleCenter.latitude],
       zoom: zoom,
     });
 
@@ -83,7 +86,7 @@ function App() {
         className="p-4 bg-black text-white fixed top-2 left-2 z-20"
         onClick={() => {
           setCircleWidth(circleWidth * 0.5);
-          setCircleCenter([lat, lng]);
+          setCircleCenter({ latitude: lat, longitude: lng });
           console.log(location);
           console.log(error);
         }}
