@@ -5,49 +5,30 @@ function metersToPixels(meters: number, latitude: number) {
   return meters / 0.075 / Math.cos((latitude * Math.PI) / 180);
 }
 
-function addCircle(map: mapboxgl.Map, center: Position, radius: number) {
-  console.log("Adding source...");
-  map.current.addSource("circleCenter", {
-    type: "geojson",
-    data: {
+function drawCircle(map: mapboxgl.Map, center: Position, radius: number) {
+  if (map.current.getSource("circleCenter")) {
+    map.current.getSource("circleCenter").setData({
       type: "Feature",
       geometry: {
         type: "Point",
         coordinates: [center.longitude, center.latitude],
       },
-    },
-  });
-  console.log("Adding layer...");
-  map.current.addLayer({
-    id: "circleLayer",
-    type: "circle",
-    source: "circleCenter",
-    paint: {
-      "circle-radius": {
-        stops: [
-          [0, 0],
-          [20, metersToPixels(radius * 2, center.latitude)],
-        ],
-        base: 2,
+    });
+    map.current.removeLayer("circleLayer");
+  } else {
+    console.log("Adding source...");
+    map.current.addSource("circleCenter", {
+      type: "geojson",
+      data: {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [center.longitude, center.latitude],
+        },
       },
-      "circle-color": "#f2cc50",
-      "circle-opacity": 0.3,
-    },
-  });
-}
-
-function updateCircle(map: mapboxgl.Map, center: Position, radius: number) {
-  console.log("Updating source...");
-  map.current.getSource("circleCenter").setData({
-    type: "Feature",
-    geometry: {
-      type: "Point",
-      coordinates: [center.longitude, center.latitude],
-    },
-  });
-  console.log("Updating layer...");
-  // May be a better way to do this
-  map.current.removeLayer("circleLayer");
+    });
+  }
+  console.log("Adding layer...");
   map.current.addLayer({
     id: "circleLayer",
     type: "circle",
@@ -108,4 +89,4 @@ function drawPlayer(map: mapboxgl.Map, center: Position, radius: number) {
   });
 }
 
-export { metersToPixels, addCircle, updateCircle, drawPlayer };
+export { metersToPixels, drawCircle, drawPlayer };

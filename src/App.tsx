@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { addCircle, updateCircle, drawPlayer } from "./utils/mapLogic";
+import { drawCircle, drawPlayer } from "./utils/mapLogic";
 import { useLocation } from "./hooks/useLocation";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -55,7 +55,7 @@ function App() {
     console.log("Map exists...");
 
     if (map.current.getSource("circleCenter")) {
-      updateCircle(map, circleCenter, circleWidth / 2);
+      drawCircle(map, circleCenter, circleWidth / 2);
       if (location) {
         drawPlayer(map, location, 5);
       }
@@ -70,7 +70,7 @@ function App() {
     listenerExists.current = true;
     map.current.on("load", () => {
       console.log("Load listener activated...");
-      addCircle(map, circleCenter, circleWidth / 2);
+      drawCircle(map, circleCenter, circleWidth / 2);
       if (location) {
         drawPlayer(map, location, 5);
       }
