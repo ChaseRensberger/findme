@@ -15,7 +15,7 @@ function App() {
   const map = useRef<mapboxgl.Map | null>(null);
   const [location, error] = useLocation();
 
-  const [circleWidth, setCircleWidth] = useState(1000000);
+  const [circleWidth, setCircleWidth] = useState(2000000);
   const [circleCenter, setCircleCenter] = useState<{
     latitude: number;
     longitude: number;
@@ -35,19 +35,23 @@ function App() {
       center: [circleCenter.longitude, circleCenter.latitude],
       zoom: zoom,
     });
-
-    // const handleClick = (e: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
-    //   console.log("Latitude:", e.lngLat.lat);
-    //   console.log("Longitude:", e.lngLat.lng);
-    // };
-
-    // map.current.on("click", handleClick);
-
-    // return () => {
-    //   map.current.off("click", handleClick);
-    //   map.current?.remove();
-    // };
   }, [circleCenter]);
+
+  useEffect(() => {
+    if (!map.current) return;
+
+    const handleClick = (e: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
+      console.log("Latitude:", e.lngLat.lat);
+      console.log("Longitude:", e.lngLat.lng);
+    };
+
+    map.current.on("click", handleClick);
+
+    return () => {
+      if (!map.current) return;
+      map.current.off("click", handleClick);
+    };
+  }, []);
 
   useEffect(() => {
     console.log("Circle center:", circleCenter, "Circle width:", circleWidth);
