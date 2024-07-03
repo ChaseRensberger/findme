@@ -38,6 +38,7 @@ function App() {
         circles[currentCircleIdx].latitude,
       ],
       zoom: circles[currentCircleIdx].zoom,
+      essential: true,
     });
   }, [currentCircleIdx]);
 
