@@ -104,7 +104,7 @@ function App() {
   }, [circleWidth, circleCenter, listenerExists, location]);
 
   return (
-    <main className="w-screen h-screen">
+    <main className="min-h-screen">
       {location ? (
         <>
           <div ref={mapContainer} className="w-full h-full mapboxgl-canvas" />
@@ -140,7 +140,6 @@ function App() {
             <h1 className="text-3xl md:text-4xl lg:text-6xl">
               Initializing Map...
             </h1>
-            {/* <Spinner /> */}
           </div>
           <h2 className="text-md md:text-lg lg:text-xl px-4">
             (If this takes a while, make sure location servies and
