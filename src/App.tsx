@@ -45,9 +45,7 @@ function App() {
   }, [currentCircleIdx]);
 
   useEffect(() => {
-    console.log("part 1");
-    if (map.current || !mapContainer.current) return;
-    console.log("part 2");
+    if (map.current || !mapContainer.current || !location) return;
 
     console.log("Creating map...");
     map.current = new mapboxgl.Map({
@@ -59,7 +57,7 @@ function App() {
       ],
       zoom: zoom,
     });
-  }, [currentCircleIdx]);
+  }, [currentCircleIdx, location]);
 
   useEffect(() => {
     if (!map.current) return;
@@ -106,44 +104,50 @@ function App() {
   }, [circleWidth, circleCenter, listenerExists, location]);
 
   return (
-    <main className="min-h-screen">
-      <div ref={mapContainer} className="w-full h-full mapboxgl-canvas" />
-      <div className="fixed top-2 left-2 flex z-20 gap-4 items-center">
-        <button
-          className="p-4 bg-black text-white"
-          onClick={() => {
-            setCurrentCircleIdx(currentCircleIdx - 1);
-          }}
-        >
-          PREV CIRCLE
-        </button>
-        <button
-          className="p-4 bg-black text-white"
-          onClick={() => {
-            setCurrentCircleIdx(currentCircleIdx + 1);
-          }}
-        >
-          NEXT CIRCLE
-        </button>
-
-        <p className="font-bold text-white text-3xl">
-          Current Circle: {currentCircleIdx + 1}
-        </p>
-      </div>
-      {/* {!location && (
-        <div className="flex flex-col items-center justify-center w-full h-full text-white gap-4 text-center">
+    <main className="h-screen w-screen bg-black">
+      {location ? (
+        <>
           {" "}
-          <div className="flex gap-4 items-center">
-            <h1 className="text-3xl md:text-4xl lg:text-6xl">
-              Initializing Map...
-            </h1>
+          <div ref={mapContainer} className="w-full h-full mapboxgl-canvas" />
+          <div className="fixed top-2 left-2 flex z-20 gap-4 items-center">
+            <button
+              className="p-4 bg-black text-white"
+              onClick={() => {
+                setCurrentCircleIdx(currentCircleIdx - 1);
+              }}
+            >
+              PREV CIRCLE
+            </button>
+            <button
+              className="p-4 bg-black text-white"
+              onClick={() => {
+                setCurrentCircleIdx(currentCircleIdx + 1);
+              }}
+            >
+              NEXT CIRCLE
+            </button>
+
+            <p className="font-bold text-white text-3xl">
+              Current Circle: {currentCircleIdx + 1}
+            </p>
           </div>
-          <h2 className="text-md md:text-lg lg:text-xl px-4">
-            (If this takes a while, make sure location servies and
-            hardware/graphics acceleration are enabled in your browser)
-          </h2>
-        </div>
-      )} */}
+        </>
+      ) : (
+        <>
+          <div className="flex flex-col items-center justify-center w-full h-full text-white gap-4 text-center">
+            {" "}
+            <div className="flex gap-4 items-center">
+              <h1 className="text-3xl md:text-4xl lg:text-6xl">
+                Initializing Map...
+              </h1>
+            </div>
+            <h2 className="text-md md:text-lg lg:text-xl px-4">
+              (If this takes a while, make sure location servies and
+              hardware/graphics acceleration are enabled in your browser)
+            </h2>
+          </div>
+        </>
+      )}
     </main>
   );
 }
