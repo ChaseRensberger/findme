@@ -3,7 +3,7 @@ import { Position } from "../types";
 
 export function useLocation(): [Position | null, Error | null] {
   const [location, setLocation] = useState<Position | null>(null);
-  const [error, setError] = useState<Error | null>(null);
+  const [locationError, setError] = useState<Error | null>(null);
 
   // TODO: rewrite to not use .then
   useEffect(() => {
@@ -28,5 +28,5 @@ export function useLocation(): [Position | null, Error | null] {
     getLocation().then(setLocation).catch(setError);
   }, []);
 
-  return [location, error];
+  return [location, locationError];
 }

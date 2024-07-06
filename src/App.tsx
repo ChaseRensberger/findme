@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { drawCircle, drawPlayer } from "./utils/mapLogic";
 import { useLocation } from "./hooks/useLocation";
 import { Position } from "./types";
+// import Spinner from "./components/spinner";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import circles from "./circles.json";
@@ -14,7 +15,7 @@ function App() {
   const mapContainer = useRef(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [currentCircleIdx, setCurrentCircleIdx] = useState(0);
-  const [location, error] = useLocation();
+  const [location, locationError] = useLocation();
 
   const [circleWidth, setCircleWidth] = useState(
     circles[currentCircleIdx].width
@@ -25,6 +26,7 @@ function App() {
   });
   const listenerExists = useRef(false);
 
+  // TODO: combine these two useEffects
   useEffect(() => {
     if (!map.current) return;
     setCircleWidth(circles[currentCircleIdx].width);
@@ -103,31 +105,49 @@ function App() {
 
   return (
     <main className="w-screen h-screen">
-      <div ref={mapContainer} className="w-full h-full mapboxgl-canvas" />
-      <div className="fixed top-2 left-2 flex z-20 gap-4 items-center">
-        <button
-          className="p-4 bg-black text-white"
-          onClick={() => {
-            setCurrentCircleIdx(currentCircleIdx - 1);
-          }}
-        >
-          PREV CIRCLE
-        </button>
-        <button
-          className="p-4 bg-black text-white"
-          onClick={() => {
-            setCurrentCircleIdx(currentCircleIdx + 1);
-            console.log(location);
-            console.log(error);
-          }}
-        >
-          NEXT CIRCLE
-        </button>
+      {location ? (
+        <>
+          <div ref={mapContainer} className="w-full h-full mapboxgl-canvas" />
+          <div className="fixed top-2 left-2 flex z-20 gap-4 items-center">
+            <button
+              className="p-4 bg-black text-white"
+              onClick={() => {
+                setCurrentCircleIdx(currentCircleIdx - 1);
+              }}
+            >
+              PREV CIRCLE
+            </button>
+            <button
+              className="p-4 bg-black text-white"
+              onClick={() => {
+                setCurrentCircleIdx(currentCircleIdx + 1);
+                console.log(location);
+                console.log(locationError);
+              }}
+            >
+              NEXT CIRCLE
+            </button>
 
-        <p className="font-bold text-white text-3xl">
-          Current Circle: {currentCircleIdx + 1}
-        </p>
-      </div>
+            <p className="font-bold text-white text-3xl">
+              Current Circle: {currentCircleIdx + 1}
+            </p>
+          </div>
+        </>
+      ) : (
+        <div className="flex flex-col items-center justify-center w-full h-full text-white gap-4 text-center">
+          {" "}
+          <div className="flex gap-4 items-center">
+            <h1 className="text-3xl md:text-4xl lg:text-6xl">
+              Initializing Map...
+            </h1>
+            {/* <Spinner /> */}
+          </div>
+          <h2 className="text-md md:text-lg lg:text-xl px-4">
+            (If this takes a while, make sure location servies and
+            hardware/graphics acceleration are enabled in your browser)
+          </h2>
+        </div>
+      )}
     </main>
   );
 }
