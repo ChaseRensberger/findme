@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Position } from "../types";
 
-export function useLocation(): [Position | null, Error | null] {
+export function useLocation(): Position | null {
   const [location, setLocation] = useState<Position | null>(null);
   const [locationError, setError] = useState<Error | null>(null);
 
@@ -28,5 +28,6 @@ export function useLocation(): [Position | null, Error | null] {
     getLocation().then(setLocation).catch(setError);
   }, []);
 
-  return [location, locationError];
+  console.log(locationError);
+  return location;
 }

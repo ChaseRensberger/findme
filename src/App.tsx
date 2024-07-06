@@ -15,7 +15,7 @@ function App() {
   const mapContainer = useRef(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [currentCircleIdx, setCurrentCircleIdx] = useState(0);
-  const [location, locationError] = useLocation();
+  const location = useLocation();
 
   const [circleWidth, setCircleWidth] = useState(
     circles[currentCircleIdx].width
@@ -45,7 +45,9 @@ function App() {
   }, [currentCircleIdx]);
 
   useEffect(() => {
+    console.log("part 1");
     if (map.current || !mapContainer.current) return;
+    console.log("part 2");
 
     console.log("Creating map...");
     map.current = new mapboxgl.Map({
@@ -105,35 +107,30 @@ function App() {
 
   return (
     <main className="min-h-screen">
-      {location ? (
-        <>
-          <div ref={mapContainer} className="w-full h-full mapboxgl-canvas" />
-          <div className="fixed top-2 left-2 flex z-20 gap-4 items-center">
-            <button
-              className="p-4 bg-black text-white"
-              onClick={() => {
-                setCurrentCircleIdx(currentCircleIdx - 1);
-              }}
-            >
-              PREV CIRCLE
-            </button>
-            <button
-              className="p-4 bg-black text-white"
-              onClick={() => {
-                setCurrentCircleIdx(currentCircleIdx + 1);
-                console.log(location);
-                console.log(locationError);
-              }}
-            >
-              NEXT CIRCLE
-            </button>
+      <div ref={mapContainer} className="w-full h-full mapboxgl-canvas" />
+      <div className="fixed top-2 left-2 flex z-20 gap-4 items-center">
+        <button
+          className="p-4 bg-black text-white"
+          onClick={() => {
+            setCurrentCircleIdx(currentCircleIdx - 1);
+          }}
+        >
+          PREV CIRCLE
+        </button>
+        <button
+          className="p-4 bg-black text-white"
+          onClick={() => {
+            setCurrentCircleIdx(currentCircleIdx + 1);
+          }}
+        >
+          NEXT CIRCLE
+        </button>
 
-            <p className="font-bold text-white text-3xl">
-              Current Circle: {currentCircleIdx + 1}
-            </p>
-          </div>
-        </>
-      ) : (
+        <p className="font-bold text-white text-3xl">
+          Current Circle: {currentCircleIdx + 1}
+        </p>
+      </div>
+      {/* {!location && (
         <div className="flex flex-col items-center justify-center w-full h-full text-white gap-4 text-center">
           {" "}
           <div className="flex gap-4 items-center">
@@ -146,7 +143,7 @@ function App() {
             hardware/graphics acceleration are enabled in your browser)
           </h2>
         </div>
-      )}
+      )} */}
     </main>
   );
 }
