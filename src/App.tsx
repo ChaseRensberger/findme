@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { drawCircle, drawPlayer } from "./utils/mapLogic";
 import { useLocation } from "./hooks/useLocation";
 import { Position } from "./types";
-// import Spinner from "./components/spinner";
+import { job } from "./utils/timeService";
+// import Timer from "./components/Timer";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import circles from "./circles.json";
@@ -10,6 +11,7 @@ import circles from "./circles.json";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_TOKEN;
 
 const zoom = circles[0].zoom;
+const manualControl = false;
 
 function App() {
   const mapContainer = useRef(null);
@@ -62,6 +64,8 @@ function App() {
   useEffect(() => {
     if (!map.current) return;
 
+    job.start();
+
     const handleClick = (e: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
       console.log("Latitude:", e.lngLat.lat);
       console.log("Longitude:", e.lngLat.lng);
@@ -110,28 +114,39 @@ function App() {
         <>
           {" "}
           <div ref={mapContainer} className="w-full h-full mapboxgl-canvas" />
-          <div className="fixed top-2 left-2 flex z-20 gap-4 items-center">
-            <button
-              className="p-4 bg-black text-white"
-              onClick={() => {
-                setCurrentCircleIdx(currentCircleIdx - 1);
-              }}
-            >
-              PREV CIRCLE
-            </button>
-            <button
-              className="p-4 bg-black text-white"
-              onClick={() => {
-                setCurrentCircleIdx(currentCircleIdx + 1);
-              }}
-            >
-              NEXT CIRCLE
-            </button>
+          {manualControl ? (
+            <>
+              <div className="fixed top-2 left-2 flex z-20 gap-4 items-center">
+                <button
+                  className="p-4 bg-black text-white"
+                  onClick={() => {
+                    setCurrentCircleIdx(currentCircleIdx - 1);
+                  }}
+                >
+                  PREV CIRCLE
+                </button>
+                <button
+                  className="p-4 bg-black text-white"
+                  onClick={() => {
+                    setCurrentCircleIdx(currentCircleIdx + 1);
+                  }}
+                >
+                  NEXT CIRCLE
+                </button>
 
-            <p className="font-bold text-white text-3xl">
-              Current Circle: {currentCircleIdx + 1}
-            </p>
-          </div>
+                <p className="font-bold text-white text-3xl">
+                  Current Circle: {currentCircleIdx + 1}
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="fixed top-4 left-4 flex z-20 gap-4 items-center text-white text-2xl font-semibold">
+                <span>Time until next circle:</span>
+                {/* <Timer expiryTimestamp={} /> */}
+              </div>
+            </>
+          )}
         </>
       ) : (
         <>
