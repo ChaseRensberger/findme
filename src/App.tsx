@@ -146,7 +146,7 @@ function App() {
               </h1>
             </div>
             <h2 className="text-md md:text-lg lg:text-xl px-4">
-              (If this takes a while, make sure location servies and
+              (If this takes a while, make sure location services and
               hardware/graphics acceleration are enabled in your browser)
             </h2>
           </div>
