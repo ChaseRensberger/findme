@@ -103,6 +103,7 @@ function App() {
     });
   }, [circleWidth, circleCenter, listenerExists, location]);
 
+  // TODO: Fix CSS on small screens
   return (
     <main className="h-screen w-screen bg-black">
       {location ? (
@@ -138,7 +139,10 @@ function App() {
             {" "}
             <div className="flex gap-4 items-center">
               <h1 className="text-3xl md:text-4xl lg:text-6xl">
-                Initializing Map...
+                Initializing Map
+                <span className="animate-dot1">.</span>
+                <span className="animate-dot2">.</span>
+                <span className="animate-dot3">.</span>
               </h1>
             </div>
             <h2 className="text-md md:text-lg lg:text-xl px-4">
