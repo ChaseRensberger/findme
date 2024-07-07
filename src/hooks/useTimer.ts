@@ -10,23 +10,25 @@ export const useTimer = (job: CronJob): [number, number] => {
   useEffect(() => {
     const interval = setInterval(() => {
       const currentTime = DateTime.now();
-      const remainingTime = endDate.diff(
+      const remainingMilliseconds = endDate.diff(
         currentTime,
         "milliseconds"
       ).milliseconds;
-      const remainingMinutes = Math.floor((remainingTime / 1000 / 60) % 60);
-      const remainingSeconds = Math.floor((remainingTime / 1000) % 60);
+      const remainingMinutes = Math.floor(
+        (remainingMilliseconds / 1000 / 60) % 60
+      );
+      const remainingSeconds = Math.floor((remainingMilliseconds / 1000) % 60);
 
       setMinutes(remainingMinutes);
       setSeconds(remainingSeconds);
 
-      if (remainingTime === 0) {
+      if (remainingMilliseconds === 0) {
         clearInterval(interval);
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [endDate]);
 
   return [minutes, seconds];
 };
