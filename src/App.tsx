@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { drawCircle, drawPlayer } from "./utils/mapLogic";
 import { useLocation } from "./hooks/useLocation";
 import { Position } from "./types";
-import { job } from "./utils/timeService";
-// import Timer from "./components/Timer";
+import { job } from "./utils/jobService";
+import { useTimer } from "./hooks/useTimer";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import circles from "./circles.json";
@@ -18,6 +18,7 @@ function App() {
   const map = useRef<mapboxgl.Map | null>(null);
   const [currentCircleIdx, setCurrentCircleIdx] = useState(0);
   const location = useLocation();
+  const [minutes, seconds] = useTimer(job);
 
   const [circleWidth, setCircleWidth] = useState(
     circles[currentCircleIdx].width
@@ -62,9 +63,8 @@ function App() {
   }, [currentCircleIdx, location]);
 
   useEffect(() => {
-    if (!map.current) return;
-
     job.start();
+    if (!map.current) return;
 
     const handleClick = (e: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
       console.log("Latitude:", e.lngLat.lat);
@@ -142,8 +142,9 @@ function App() {
           ) : (
             <>
               <div className="fixed top-4 left-4 flex z-20 gap-4 items-center text-white text-2xl font-semibold">
-                <span>Time until next circle:</span>
-                {/* <Timer expiryTimestamp={} /> */}
+                <span>
+                  Time until next circle: {minutes}:{seconds}
+                </span>
               </div>
             </>
           )}

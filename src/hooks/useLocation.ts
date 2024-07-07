@@ -28,6 +28,7 @@ export function useLocation(): Position | null {
     getLocation().then(setLocation).catch(setError);
   }, []);
 
-  console.log(locationError);
+  // TODO: send error to server
+  if (locationError) console.log(locationError);
   return location;
 }
