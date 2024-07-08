@@ -7,7 +7,7 @@ const job = new CronJob(
   }, // onTick
   null, // onComplete
   true, // start
-  "America/Los_Angeles" // New_Yor
+  "America/Los_Angeles"
 );
 
 export { job };

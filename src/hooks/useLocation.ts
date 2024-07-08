@@ -3,7 +3,6 @@ import { Position } from "../types";
 
 export function useLocation(): Position | null {
   const [location, setLocation] = useState<Position | null>(null);
-  const [locationError, setError] = useState<Error | null>(null);
 
   // TODO: rewrite to not use .then
   useEffect(() => {
@@ -24,11 +23,17 @@ export function useLocation(): Position | null {
         }
       });
     }
-
-    getLocation().then(setLocation).catch(setError);
+    // setInterval(() => {
+    getLocation()
+      .then((location: Position) => {
+        console.log(location);
+        setLocation(location);
+      })
+      .catch((error: Error) => {
+        console.log(error);
+      });
+    // }, 10);
   }, []);
 
-  // TODO: send error to server
-  if (locationError) console.log(locationError);
   return location;
 }
