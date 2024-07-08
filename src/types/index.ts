@@ -3,4 +3,11 @@ interface Position {
   longitude: number;
 }
 
-export type { Position };
+interface Circle {
+  latitude: number;
+  longitude: number;
+  width: number;
+  zoom: number;
+}
+
+export type { Position, Circle };

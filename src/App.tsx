@@ -143,7 +143,8 @@ function App() {
             <>
               <div className="fixed top-4 left-4 flex z-20 gap-4 items-center text-white text-2xl font-semibold">
                 <span>
-                  Time until next circle: {minutes}:{seconds}
+                  Time until next circle: {minutes}:
+                  {seconds.toString().padStart(2, "0")}
                 </span>
               </div>
             </>
