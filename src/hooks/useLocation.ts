@@ -26,7 +26,7 @@ export function useLocation(): Position | null {
     // setInterval(() => {
     getLocation()
       .then((location: Position) => {
-        console.log(location);
+        console.log("Setting location");
         setLocation(location);
       })
       .catch((error: Error) => {

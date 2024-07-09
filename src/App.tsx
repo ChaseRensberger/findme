@@ -6,11 +6,14 @@ import { job } from "./utils/jobService";
 import { useTimer } from "./hooks/useTimer";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import circles from "./circles.json";
+import { jobEmitter } from "./utils/jobService";
+import { fetchCurrentCircle } from "./utils/dataService";
+import { Circle } from "./types";
+// import circles from "./circles.json";
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_TOKEN;
 
-const zoom = circles[0].zoom;
+// const zoom = circles[0].zoom;
 const manualControl = false;
 
 function App() {
@@ -21,31 +24,44 @@ function App() {
   const [minutes, seconds] = useTimer(job);
 
   const [circleWidth, setCircleWidth] = useState(
-    circles[currentCircleIdx].width
+    // circles[currentCircleIdx].width
+    0
   );
   const [circleCenter, setCircleCenter] = useState<Position>({
-    latitude: circles[currentCircleIdx].latitude,
-    longitude: circles[currentCircleIdx].longitude,
+    // latitude: circles[currentCircleIdx].latitude,
+    // longitude: circles[currentCircleIdx].longitude,
+    latitude: 0,
+    longitude: 0,
   });
+  const [mapZoom, setMapZoom] = useState(20);
   const listenerExists = useRef(false);
 
   // TODO: combine these two useEffects
+  // useEffect(() => {
+  //   if (!map.current) return;
+  //   setCircleWidth(circles[currentCircleIdx].width);
+  //   setCircleCenter({
+  //     latitude: circles[currentCircleIdx].latitude,
+  //     longitude: circles[currentCircleIdx].longitude,
+  //   });
+  //   map.current.flyTo({
+  //     center: [
+  //       circles[currentCircleIdx].longitude,
+  //       circles[currentCircleIdx].latitude,
+  //     ],
+  //     zoom: circles[currentCircleIdx].zoom,
+  //     essential: true,
+  //   });
+  // }, [currentCircleIdx]);
+
   useEffect(() => {
     if (!map.current) return;
-    setCircleWidth(circles[currentCircleIdx].width);
-    setCircleCenter({
-      latitude: circles[currentCircleIdx].latitude,
-      longitude: circles[currentCircleIdx].longitude,
-    });
     map.current.flyTo({
-      center: [
-        circles[currentCircleIdx].longitude,
-        circles[currentCircleIdx].latitude,
-      ],
-      zoom: circles[currentCircleIdx].zoom,
+      center: [circleCenter.longitude, circleCenter.latitude],
+      zoom: mapZoom,
       essential: true,
     });
-  }, [currentCircleIdx]);
+  }, [circleCenter, circleWidth, mapZoom]);
 
   useEffect(() => {
     if (map.current || !mapContainer.current || !location) return;
@@ -54,29 +70,46 @@ function App() {
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/chasehudson01/clxy1c84x002z01qo8ff251xj",
-      center: [
-        circles[currentCircleIdx].longitude,
-        circles[currentCircleIdx].latitude,
-      ],
-      zoom: zoom,
+      center: [circleCenter.longitude, circleCenter.latitude],
+      zoom: mapZoom,
     });
-  }, [currentCircleIdx, location]);
+    jobEmitter.on("circleChange", (circle: Circle) => {
+      console.log("Circle change detected...");
+      setCircleWidth(circle.Meters);
+      setCircleCenter({
+        latitude: circle.Latitude,
+        longitude: circle.Longitude,
+      });
+      setMapZoom(circle.zoom);
+    });
+  }, [circleCenter, circleWidth, location, mapZoom]);
 
   useEffect(() => {
     job.start();
-    if (!map.current) return;
-
-    const handleClick = (e: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
-      console.log("Latitude:", e.lngLat.lat);
-      console.log("Longitude:", e.lngLat.lng);
-    };
-
-    map.current.on("click", handleClick);
-
+    fetchCurrentCircle().then((circle) => {
+      setCircleWidth(circle.Meters);
+      setCircleCenter({
+        latitude: circle.Latitude,
+        longitude: circle.Longitude,
+      });
+      setMapZoom(circle.zoom);
+    });
     return () => {
-      if (!map.current) return;
-      map.current.off("click", handleClick);
+      job.stop();
     };
+    // if (!map.current) return;
+
+    // const handleClick = (e: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
+    //   console.log("Latitude:", e.lngLat.lat);
+    //   console.log("Longitude:", e.lngLat.lng);
+    // };
+
+    // map.current.on("click", handleClick);
+
+    // return () => {
+    //   if (!map.current) return;
+    //   map.current.off("click", handleClick);
+    // };
   }, []);
 
   useEffect(() => {

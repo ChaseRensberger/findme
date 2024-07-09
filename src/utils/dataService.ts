@@ -1,9 +1,11 @@
 import { Circle } from "../types";
 
-function fetchCurrentCircle(): Promise<Circle> {
-  return fetch("circle")
-    .then((response) => response.json())
-    .then((data) => data);
+async function fetchCurrentCircle(): Promise<Circle> {
+  const response = await fetch(
+    import.meta.env.VITE_SERVER_URL + "/current_circle"
+  );
+  const circle = await response.json();
+  return circle;
 }
 
 export { fetchCurrentCircle };
