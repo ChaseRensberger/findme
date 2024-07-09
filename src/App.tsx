@@ -86,7 +86,7 @@ function App() {
 
   useEffect(() => {
     job.start();
-    fetchCurrentCircle().then((circle) => {
+    fetchCurrentCircle().then((circle: Circle) => {
       setCircleWidth(circle.Meters);
       setCircleCenter({
         latitude: circle.Latitude,
