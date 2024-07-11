@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { drawCircle, drawPlayer } from "./utils/mapLogic";
+import { drawCircle, drawPlayer } from "./utils/mapService";
 import { useLocation } from "./hooks/useLocation";
 import { Position } from "./types";
 import { job } from "./utils/jobService";
@@ -9,54 +9,25 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { jobEmitter } from "./utils/jobService";
 import { fetchCurrentCircle } from "./utils/dataService";
 import { Circle } from "./types";
-// import circles from "./circles.json";
-
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_TOKEN;
-
-// const zoom = circles[0].zoom;
-const manualControl = false;
 
 function App() {
   const mapContainer = useRef(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const [currentCircleIdx, setCurrentCircleIdx] = useState(0);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
   const location = useLocation();
   const [minutes, seconds] = useTimer(job);
 
-  const [circleWidth, setCircleWidth] = useState(
-    // circles[currentCircleIdx].width
-    0
-  );
+  const [circleWidth, setCircleWidth] = useState(0);
   const [circleCenter, setCircleCenter] = useState<Position>({
-    // latitude: circles[currentCircleIdx].latitude,
-    // longitude: circles[currentCircleIdx].longitude,
     latitude: 0,
     longitude: 0,
   });
   const [mapZoom, setMapZoom] = useState(20);
   const listenerExists = useRef(false);
 
-  // TODO: combine these two useEffects
-  // useEffect(() => {
-  //   if (!map.current) return;
-  //   setCircleWidth(circles[currentCircleIdx].width);
-  //   setCircleCenter({
-  //     latitude: circles[currentCircleIdx].latitude,
-  //     longitude: circles[currentCircleIdx].longitude,
-  //   });
-  //   map.current.flyTo({
-  //     center: [
-  //       circles[currentCircleIdx].longitude,
-  //       circles[currentCircleIdx].latitude,
-  //     ],
-  //     zoom: circles[currentCircleIdx].zoom,
-  //     essential: true,
-  //   });
-  // }, [currentCircleIdx]);
-
   useEffect(() => {
-    if (!map.current) return;
-    map.current.flyTo({
+    if (!mapRef.current) return;
+    mapRef.current.flyTo({
       center: [circleCenter.longitude, circleCenter.latitude],
       zoom: mapZoom,
       essential: true,
@@ -64,10 +35,10 @@ function App() {
   }, [circleCenter, circleWidth, mapZoom]);
 
   useEffect(() => {
-    if (map.current || !mapContainer.current || !location) return;
+    if (mapRef.current || !mapContainer.current || !location) return;
 
     console.log("Creating map...");
-    map.current = new mapboxgl.Map({
+    mapRef.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/chasehudson01/clxy1c84x002z01qo8ff251xj",
       center: [circleCenter.longitude, circleCenter.latitude],
@@ -114,14 +85,16 @@ function App() {
 
   useEffect(() => {
     console.log("Circle center:", circleCenter, "Circle width:", circleWidth);
-    if (!map.current) return;
+    if (!mapRef.current) return;
     console.log("Map exists...");
 
-    if (map.current.getSource("circleCenter")) {
-      drawCircle(map, circleCenter, circleWidth / 2);
-      if (location) {
-        drawPlayer(map, location, 5);
-      }
+    if (
+      location &&
+      mapRef.current &&
+      mapRef.current.getSource("circleCenter")
+    ) {
+      drawCircle(mapRef.current, circleCenter, circleWidth / 2);
+      drawPlayer(mapRef.current, location, 5);
       return;
     }
     if (listenerExists.current) {
@@ -131,11 +104,11 @@ function App() {
     }
     console.log("Adding load listener...");
     listenerExists.current = true;
-    map.current.on("load", () => {
+    mapRef.current.on("load", () => {
       console.log("Load listener activated...");
-      drawCircle(map, circleCenter, circleWidth / 2);
-      if (location) {
-        drawPlayer(map, location, 5);
+      if (mapRef.current && location) {
+        drawCircle(mapRef.current, circleCenter, circleWidth / 2);
+        drawPlayer(mapRef.current, location, 5);
       }
     });
   }, [circleWidth, circleCenter, listenerExists, location]);
@@ -147,41 +120,12 @@ function App() {
         <>
           {" "}
           <div ref={mapContainer} className="w-full h-full mapboxgl-canvas" />
-          {manualControl ? (
-            <>
-              <div className="fixed top-2 left-2 flex z-20 gap-4 items-center">
-                <button
-                  className="p-4 bg-black text-white"
-                  onClick={() => {
-                    setCurrentCircleIdx(currentCircleIdx - 1);
-                  }}
-                >
-                  PREV CIRCLE
-                </button>
-                <button
-                  className="p-4 bg-black text-white"
-                  onClick={() => {
-                    setCurrentCircleIdx(currentCircleIdx + 1);
-                  }}
-                >
-                  NEXT CIRCLE
-                </button>
-
-                <p className="font-bold text-white text-3xl">
-                  Current Circle: {currentCircleIdx + 1}
-                </p>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="fixed top-4 left-4 flex z-20 gap-4 items-center text-white text-2xl font-semibold">
-                <span>
-                  Time until next circle: {minutes}:
-                  {seconds.toString().padStart(2, "0")}
-                </span>
-              </div>
-            </>
-          )}
+          <div className="fixed top-4 left-4 flex z-20 gap-4 items-center text-white text-2xl font-semibold">
+            <span>
+              Time until next circle: {minutes}:
+              {seconds.toString().padStart(2, "0")}
+            </span>
+          </div>
         </>
       ) : (
         <>
