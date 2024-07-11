@@ -162,4 +162,4 @@ function drawAllPlayers(map: mapboxgl.Map, playerLocations: Position[]) {
   // });
 }
 
-export { metersToPixels, drawCircle, drawPlayer };
+export { metersToPixels, drawCircle, drawPlayer, drawAllPlayers };
