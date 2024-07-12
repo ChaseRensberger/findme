@@ -7,8 +7,8 @@ import { useTimer } from "./hooks/useTimer";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { jobEmitter } from "./utils/jobService";
-import { fetchCurrentCircle } from "./utils/dataService";
-import { Circle } from "./types";
+import { fetchCurrentCircle, fetchGameState } from "./utils/dataService";
+import { Circle, GameState } from "./types";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_TOKEN;
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const location = useLocation();
   const [minutes, seconds] = useTimer(job);
-
+  const [gameState, setGameState] = useState<GameState>(GameState.WAITING);
   const [circleWidth, setCircleWidth] = useState(0);
   const [circleCenter, setCircleCenter] = useState<Position>({
     latitude: 38.892602493310704,
@@ -27,6 +27,9 @@ function App() {
 
   useEffect(() => {
     job.start();
+    fetchGameState().then((gameState: GameState) => {
+      setGameState(gameState);
+    });
     fetchCurrentCircle().then((circle: Circle) => {
       setCircleWidth(circle.meters);
       setCircleCenter({
@@ -105,14 +108,39 @@ function App() {
     <main className="h-screen w-screen bg-black">
       {location ? (
         <>
-          {" "}
-          <div ref={mapContainer} className="w-full h-full mapboxgl-canvas" />
-          <div className="fixed top-4 left-4 flex z-20 gap-4 items-center text-white text-2xl font-semibold">
-            <span>
-              Time until next circle: {minutes}:
-              {seconds.toString().padStart(2, "0")}
-            </span>
-          </div>
+          {gameState === GameState.FINISHED && (
+            <>
+              <div className="flex flex-col items-center justify-center w-full h-full text-white gap-4 text-center">
+                <h1 className="text-5xl">Find Me has ended.</h1>
+                <h2 className="text-2xl">Thanks for playing! -LukeJ</h2>
+              </div>
+            </>
+          )}
+          {gameState === GameState.WAITING && (
+            <>
+              <div className="flex flex-col items-center justify-center w-full h-full text-white gap-4 text-center">
+                <h1 className="text-5xl">Find Me starts at 12:00 EST</h1>
+                <h2 className="text-2xl">
+                  Make sure to refresh this page at the start time. Thanks for
+                  playing! -LukeJ
+                </h2>
+              </div>
+            </>
+          )}
+          {gameState === GameState.ACTIVE && (
+            <>
+              <div
+                ref={mapContainer}
+                className="w-full h-full mapboxgl-canvas"
+              />
+              <div className="fixed top-4 left-4 flex z-20 gap-4 items-center text-white text-2xl font-semibold">
+                <span>
+                  Time until next circle: {minutes}:
+                  {seconds.toString().padStart(2, "0")}
+                </span>
+              </div>
+            </>
+          )}
         </>
       ) : (
         <>
