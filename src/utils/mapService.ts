@@ -21,12 +21,16 @@ function metersToPixels(meters: number, latitude: number) {
 
 function drawCircle(map: mapboxgl.Map, center: Position, radius: number) {
   if (map.getSource("circleCenter")) {
-    map.getSource("circleCenter").setData({
+    const circleCenterSource: mapboxgl.GeoJSONSource = map.getSource(
+      "circleCenter"
+    ) as mapboxgl.GeoJSONSource;
+    circleCenterSource.setData({
       type: "Feature",
       geometry: {
         type: "Point",
         coordinates: [center.longitude, center.latitude],
       },
+      properties: {},
     });
     map.removeLayer("circleLayer");
   } else {
@@ -39,6 +43,7 @@ function drawCircle(map: mapboxgl.Map, center: Position, radius: number) {
           type: "Point",
           coordinates: [center.longitude, center.latitude],
         },
+        properties: {},
       },
     });
   }
@@ -63,12 +68,16 @@ function drawCircle(map: mapboxgl.Map, center: Position, radius: number) {
 
 function drawPlayer(map: mapboxgl.Map, center: Position, radius: number) {
   if (map.getSource("playerCenter")) {
-    map.getSource("playerCenter").setData({
+    const playerCenterSource: mapboxgl.GeoJSONSource = map.getSource(
+      "playerCenter"
+    ) as mapboxgl.GeoJSONSource;
+    playerCenterSource.setData({
       type: "Feature",
       geometry: {
         type: "Point",
         coordinates: [center.longitude, center.latitude],
       },
+      properties: {},
     });
     map.removeLayer("playerLayer");
   } else {
@@ -81,6 +90,7 @@ function drawPlayer(map: mapboxgl.Map, center: Position, radius: number) {
           type: "Point",
           coordinates: [center.longitude, center.latitude],
         },
+        properties: {},
       },
     });
   }
@@ -106,7 +116,10 @@ function drawPlayer(map: mapboxgl.Map, center: Position, radius: number) {
 
 function drawAllPlayers(map: mapboxgl.Map, playerLocations: Position[]) {
   if (map.getSource("playerLocations")) {
-    map.getSource("playerLocations").setData({
+    const playerLocationsSource: mapboxgl.GeoJSONSource = map.getSource(
+      "playerLocations"
+    ) as mapboxgl.GeoJSONSource;
+    playerLocationsSource.setData({
       type: "FeatureCollection",
       features: playerLocations.map(
         (playerLocation: Position, index: number) => {
