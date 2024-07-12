@@ -4,9 +4,9 @@ interface Position {
 }
 
 interface Circle {
-  Latitude: number;
-  Longitude: number;
-  Meters: number;
+  latitude: number;
+  longitude: number;
+  meters: number;
   zoom: number;
 }
 

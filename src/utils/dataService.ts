@@ -7,9 +7,9 @@ async function fetchCurrentCircle(): Promise<Circle> {
   );
   const circleJson = await response.json();
   const circle: Circle = {
-    Latitude: Number(circleJson.latitude),
-    Longitude: Number(circleJson.longitude),
-    Meters: circleJson.width,
+    latitude: Number(circleJson.latitude),
+    longitude: Number(circleJson.longitude),
+    meters: circleJson.meters,
     zoom: circleJson.zoom,
   };
   return circle;

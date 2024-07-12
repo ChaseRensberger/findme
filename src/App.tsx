@@ -19,19 +19,19 @@ function App() {
 
   const [circleWidth, setCircleWidth] = useState(0);
   const [circleCenter, setCircleCenter] = useState<Position>({
-    latitude: 0,
-    longitude: 0,
+    latitude: 38.892602493310704,
+    longitude: -77.03771563587073,
   });
-  const [mapZoom, setMapZoom] = useState(20);
+  const [mapZoom, setMapZoom] = useState(11);
   const listenerExists = useRef(false);
 
   useEffect(() => {
     job.start();
     fetchCurrentCircle().then((circle: Circle) => {
-      setCircleWidth(circle.Meters);
+      setCircleWidth(circle.meters);
       setCircleCenter({
-        latitude: circle.Latitude,
-        longitude: circle.Longitude,
+        latitude: circle.latitude,
+        longitude: circle.longitude,
       });
       setMapZoom(circle.zoom);
     });
@@ -61,10 +61,10 @@ function App() {
     });
     jobEmitter.on("circleChange", (circle: Circle) => {
       console.log("Circle change detected...");
-      setCircleWidth(circle.Meters);
+      setCircleWidth(circle.meters);
       setCircleCenter({
-        latitude: circle.Latitude,
-        longitude: circle.Longitude,
+        latitude: circle.latitude,
+        longitude: circle.longitude,
       });
       setMapZoom(circle.zoom);
     });
