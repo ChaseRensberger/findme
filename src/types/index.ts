@@ -10,4 +10,11 @@ interface Circle {
   zoom: number;
 }
 
+enum GameState {
+  WAITING = "WAITING",
+  ACTIVE = "ACTIVE",
+  FINISHED = "FINISHED",
+}
+
+export { GameState };
 export type { Position, Circle };

@@ -26,6 +26,21 @@ function App() {
   const listenerExists = useRef(false);
 
   useEffect(() => {
+    job.start();
+    fetchCurrentCircle().then((circle: Circle) => {
+      setCircleWidth(circle.Meters);
+      setCircleCenter({
+        latitude: circle.Latitude,
+        longitude: circle.Longitude,
+      });
+      setMapZoom(circle.zoom);
+    });
+    return () => {
+      job.stop();
+    };
+  }, []);
+
+  useEffect(() => {
     if (!mapRef.current) return;
     mapRef.current.flyTo({
       center: [circleCenter.longitude, circleCenter.latitude],
@@ -54,34 +69,6 @@ function App() {
       setMapZoom(circle.zoom);
     });
   }, [circleCenter, circleWidth, location, mapZoom]);
-
-  useEffect(() => {
-    job.start();
-    fetchCurrentCircle().then((circle: Circle) => {
-      setCircleWidth(circle.Meters);
-      setCircleCenter({
-        latitude: circle.Latitude,
-        longitude: circle.Longitude,
-      });
-      setMapZoom(circle.zoom);
-    });
-    return () => {
-      job.stop();
-    };
-    // if (!map.current) return;
-
-    // const handleClick = (e: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
-    //   console.log("Latitude:", e.lngLat.lat);
-    //   console.log("Longitude:", e.lngLat.lng);
-    // };
-
-    // map.current.on("click", handleClick);
-
-    // return () => {
-    //   if (!map.current) return;
-    //   map.current.off("click", handleClick);
-    // };
-  }, []);
 
   useEffect(() => {
     console.log("Circle center:", circleCenter, "Circle width:", circleWidth);

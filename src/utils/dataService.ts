@@ -1,4 +1,5 @@
 import { Circle } from "../types";
+import { GameState } from "../types";
 
 async function fetchCurrentCircle(): Promise<Circle> {
   const response = await fetch(
@@ -14,4 +15,15 @@ async function fetchCurrentCircle(): Promise<Circle> {
   return circle;
 }
 
-export { fetchCurrentCircle };
+async function fetchGameState(): Promise<GameState> {
+  const response = await fetch(
+    import.meta.env.VITE_SERVER_URL +
+      "/game_state" +
+      "?id=" +
+      import.meta.env.VITE_GAME_ID
+  );
+  const gameState = await response.json();
+  return gameState as GameState;
+}
+
+export { fetchCurrentCircle, fetchGameState };

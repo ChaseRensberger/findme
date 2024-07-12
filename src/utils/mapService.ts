@@ -5,6 +5,20 @@ function metersToPixels(meters: number, latitude: number) {
   return meters / 0.075 / Math.cos((latitude * Math.PI) / 180);
 }
 
+// if (!map.current) return;
+
+// const handleClick = (e: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
+//   console.log("Latitude:", e.lngLat.lat);
+//   console.log("Longitude:", e.lngLat.lng);
+// };
+
+// map.current.on("click", handleClick);
+
+// return () => {
+//   if (!map.current) return;
+//   map.current.off("click", handleClick);
+// };
+
 function drawCircle(map: mapboxgl.Map, center: Position, radius: number) {
   if (map.getSource("circleCenter")) {
     map.getSource("circleCenter").setData({
