@@ -45,8 +45,8 @@ export function useLocation(): Position | null {
         .catch((error: Error) => {
           console.log(error);
         });
-      // 1 minutes
-    }, 1000 * 60 * 1);
+      // 3 minutes
+    }, 1000 * 60 * 3);
 
     return () => {
       clearInterval(intervalId);
