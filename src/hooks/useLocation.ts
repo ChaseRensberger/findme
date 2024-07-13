@@ -23,7 +23,7 @@ export function useLocation(): Position | null {
         }
       });
     }
-    // setInterval(() => {
+
     getLocation()
       .then((location: Position) => {
         console.log("Setting location");
@@ -32,7 +32,14 @@ export function useLocation(): Position | null {
       .catch((error: Error) => {
         console.log(error);
       });
-    // }, 10);
+
+    const intervalId = setInterval(() => {
+      console.log("Interval Test");
+    }, 1000 * 100);
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
 
   return location;
