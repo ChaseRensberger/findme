@@ -63,6 +63,7 @@ function App() {
       zoom: mapZoom,
       pitch: 0,
     });
+    mapRef.current.touchPitch.disable();
     jobEmitter.on("circleChange", (circle: Circle) => {
       console.log("Circle change detected...");
       setCircleWidth(circle.meters);
