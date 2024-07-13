@@ -9,6 +9,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { jobEmitter } from "./utils/jobService";
 import { fetchCurrentCircle, fetchGameState } from "./utils/dataService";
 import { Circle, GameState } from "./types";
+
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_TOKEN;
 
 function App() {
@@ -112,20 +113,20 @@ function App() {
         <>
           {gameState === GameState.FINISHED && (
             <>
-              <div className="flex flex-col items-center justify-center w-full h-full text-white gap-4 text-center">
-                <h1 className="text-5xl">Find Me has ended.</h1>
-                <h2 className="text-2xl">Thanks for playing! -LukeJ</h2>
+              <div className="flex flex-col items-center justify-center w-full h-full text-white gap-4 text-center bg-end bg-[size:200%] bg-center sm:bg-cover bg-no-repeat">
+                {/* <h1 className="text-5xl">Find Me has ended.</h1>
+                <h2 className="text-2xl">Thanks for playing! -LukeJ</h2> */}
               </div>
             </>
           )}
           {gameState === GameState.WAITING && (
             <>
-              <div className="flex flex-col items-center justify-center w-full h-full text-white gap-4 text-center">
-                <h1 className="text-5xl">Find Me starts at 12:00 EST</h1>
+              <div className="flex flex-col items-center justify-center w-full h-full text-white gap-4 text-center bg-begin bg-[size:200%] bg-center sm:bg-cover bg-no-repeat">
+                {/* <h1 className="text-5xl">Find Me starts at 12:00 EST</h1>
                 <h2 className="text-2xl">
                   Make sure to refresh this page at the start time. Thanks for
                   playing! -LukeJ
-                </h2>
+                </h2> */}
               </div>
             </>
           )}

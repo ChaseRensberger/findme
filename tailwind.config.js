@@ -22,6 +22,10 @@ export default {
         dot2: "dot2 4s infinite",
         dot3: "dot3 4s infinite",
       },
+      backgroundImage: {
+        begin: "url('/src/assets/begin.jpeg')",
+        end: "url('/src/assets/end.jpeg')",
+      },
     },
   },
   plugins: [],
