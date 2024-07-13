@@ -61,6 +61,7 @@ function App() {
       style: "mapbox://styles/chasehudson01/clxy1c84x002z01qo8ff251xj",
       center: [circleCenter.longitude, circleCenter.latitude],
       zoom: mapZoom,
+      pitch: 0,
     });
     jobEmitter.on("circleChange", (circle: Circle) => {
       console.log("Circle change detected...");
