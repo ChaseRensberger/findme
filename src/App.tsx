@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { drawCircle, drawPlayer } from "./utils/mapService";
+import { drawCircle } from "./utils/mapService";
 import { useLocation } from "./hooks/useLocation";
 import { Position } from "./types";
 import { job } from "./utils/jobService";
@@ -84,7 +84,7 @@ function App() {
       mapRef.current.getSource("circleCenter")
     ) {
       drawCircle(mapRef.current, circleCenter, circleWidth / 2);
-      drawPlayer(mapRef.current, location, 5);
+      // drawPlayer(mapRef.current, location, 5);
       return;
     }
     if (listenerExists.current) {
@@ -98,7 +98,7 @@ function App() {
       console.log("Load listener activated...");
       if (mapRef.current && location) {
         drawCircle(mapRef.current, circleCenter, circleWidth / 2);
-        drawPlayer(mapRef.current, location, 5);
+        // drawPlayer(mapRef.current, location, 40);
       }
     });
   }, [circleWidth, circleCenter, listenerExists, location]);
