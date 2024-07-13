@@ -26,4 +26,19 @@ async function fetchGameState(): Promise<GameState> {
   return gameState as GameState;
 }
 
-export { fetchCurrentCircle, fetchGameState };
+async function sendPlayerLocation(latitude: number, longitude: number) {
+  const latitudeString = latitude.toString();
+  const longitudeString = longitude.toString();
+  await fetch(import.meta.env.VITE_SERVER_URL + "/player_location", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      latitude: latitudeString,
+      longitude: longitudeString,
+    }),
+  });
+}
+
+export { fetchCurrentCircle, fetchGameState, sendPlayerLocation };

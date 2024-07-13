@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Position } from "../types";
+import { sendPlayerLocation } from "../utils/dataService";
 
 export function useLocation(): Position | null {
   const [location, setLocation] = useState<Position | null>(null);
@@ -27,6 +28,7 @@ export function useLocation(): Position | null {
     getLocation()
       .then((location: Position) => {
         console.log("Setting location");
+        sendPlayerLocation(location.latitude, location.longitude);
         setLocation(location);
       })
       .catch((error: Error) => {
@@ -34,8 +36,17 @@ export function useLocation(): Position | null {
       });
 
     const intervalId = setInterval(() => {
-      console.log("Interval Test");
-    }, 1000 * 100);
+      getLocation()
+        .then((location: Position) => {
+          console.log("Setting location");
+          sendPlayerLocation(location.latitude, location.longitude);
+          setLocation(location);
+        })
+        .catch((error: Error) => {
+          console.log(error);
+        });
+      // 1 minutes
+    }, 1000 * 60 * 1);
 
     return () => {
       clearInterval(intervalId);
